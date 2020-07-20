@@ -51,7 +51,9 @@ class IndicatorView {
 
     // Adds the progress views to the top most view
     open func showProgressView() {
-        guard let topView = UIApplication.shared.keyWindow?.rootViewController?.view else {
+
+        guard let topView = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?
+.rootViewController?.view else {
             return
         }
         
@@ -59,7 +61,7 @@ class IndicatorView {
         progressView.backgroundColor = self.forgroundColor
         activityIndicator.style = self.activityStyle
 
-        UIApplication.shared.keyWindow?.addSubview(containerView)
+        UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.addSubview(containerView)
         progressView.addSubview(activityIndicator)
         containerView.addSubview(progressView)
         
