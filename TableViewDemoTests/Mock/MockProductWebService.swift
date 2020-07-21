@@ -16,6 +16,7 @@ class MockProductWebService {
     var isProductMethodCalled: Bool = false
     var shouldReturnError: Bool = false
  
+    // Mock the api to get product data from server
     func getProducts(completion: @escaping (ProductResult?, ProductAPIError?) -> (Void)) {
         isProductMethodCalled = true
         if shouldReturnError {

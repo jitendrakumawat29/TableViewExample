@@ -8,6 +8,7 @@
 
 import UIKit
 
+// This protocol is implemented when we get response from server
 protocol APIResponseProtocol:class {
     func didReceiveResponse()
     func errorHandler(error: ProductAPIError)
@@ -26,13 +27,19 @@ class ViewController: UIViewController {
     override func loadView() {
       super.loadView()
       view.backgroundColor = .white
-      safeArea = view.layoutMarginsGuide
-      setupTableView()
+      self.safeArea = view.layoutMarginsGuide
+      self.setupTableView()
       self.productVM.delegate = self
     }
     
+    // Add table view and it's Constraints to main view
     func setupTableView() {
-      IndicatorView.shared.showProgressView()
+       if #available(iOS 11.0, *) {
+        IndicatorView.shared.showProgressView()
+       } else {
+            // Fallback on earlier versions
+       }
+      // call the api to fetch all the products from server
       productVM.fetchProducts()
         
       self.tableView.isHidden = true
@@ -51,11 +58,11 @@ class ViewController: UIViewController {
       self.tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
       self.tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
-      // add pull to refresh
+      // add pull to refresh to tableview and add target action
       self.tableView.addSubview(refreshControl)
-      self.refreshControl.tintColor = UIColor.blue
+      self.refreshControl.tintColor = UIColor.appThemeColor
       let string = "Fetching Product Data.."
-      let stringAttribute = [NSAttributedString.Key.foregroundColor: UIColor.blue]
+      let stringAttribute = [NSAttributedString.Key.foregroundColor: UIColor.appThemeColor, NSAttributedString.Key.font: UIFont.regular(16)]
       let atributeString = NSAttributedString(string: string, attributes: stringAttribute)
       self.refreshControl.attributedTitle = atributeString
       self.refreshControl.addTarget(self, action: #selector(refreshProductData(_:)), for: .valueChanged)
@@ -63,15 +70,20 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // set navigation bar title and tint color
+        self.navigationController?.navigationBar.barTintColor = UIColor.appThemeColor
+        self.navigationController?.navigationBar.titleTextAttributes =
+        [NSAttributedString.Key.foregroundColor: UIColor.white,
+         NSAttributedString.Key.font: UIFont.bold(18)]
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+        
     }
-    
     @objc private func refreshProductData(_ sender: Any) {
-        // Fetch Products Data
+        // call the api to fetch all the latest products from server
         productVM.fetchProducts()
     }
 }
@@ -99,15 +111,30 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 // MARK: API response
 extension ViewController: APIResponseProtocol {
     func errorHandler(error: ProductAPIError) {
-        IndicatorView.shared.hideProgressView()
-        self.refreshControl.endRefreshing()
+        if #available(iOS 11.0, *) {
+            IndicatorView.shared.hideProgressView()
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        DispatchQueue.main.async {
+            self.refreshControl.endRefreshing()
+        }
     }
+    
     func didReceiveResponse() {
-        IndicatorView.shared.hideProgressView()
-        self.navigationController?.navigationBar.topItem?.title = productVM.title
-        self.tableView.isHidden = false
-        self.tableView.reloadData()
-        self.refreshControl.endRefreshing()
+        if #available(iOS 11.0, *) {
+            IndicatorView.shared.hideProgressView()
+        } else {
+            // Fallback on earlier versions
+        }
+        // Once data has pulled from server then update table view and display to view
+        DispatchQueue.main.async {
+            self.navigationController?.navigationBar.topItem?.title = self.productVM.title
+            self.tableView.isHidden = false
+            self.tableView.reloadData()
+            self.refreshControl.endRefreshing()
+        }
     }
 }
 

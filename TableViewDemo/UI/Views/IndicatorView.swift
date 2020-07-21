@@ -10,11 +10,15 @@ import Foundation
 import UIKit
 
 /// A simple progress view
+@available(iOS 11.0, *)
+@available(iOS 11.0, *)
+@available(iOS 11.0, *)
+@available(iOS 11.0, *)
+
 class IndicatorView {
     
+    // MARK: Class Properties
     public static let shared = IndicatorView()
-
-    
     public var containerView = UIView()
     public var progressView = UIView()
     public var activityIndicator = UIActivityIndicatorView()
@@ -33,8 +37,8 @@ class IndicatorView {
         }
     }
 
-    public var activityStyle: UIActivityIndicatorView.Style = UIActivityIndicatorView.Style.large
-
+    // Create progress bar style
+    public var activityStyle: UIActivityIndicatorView.Style = UIActivityIndicatorView.Style.whiteLarge
     private var activeConstraints = [NSLayoutConstraint]()
 
     // MARK: - Initializer
@@ -65,6 +69,7 @@ class IndicatorView {
         progressView.addSubview(activityIndicator)
         containerView.addSubview(progressView)
         
+        // add Constraints to class properties
         activeConstraints = [
             containerView.heightAnchor.constraint(equalTo: topView.heightAnchor),
             containerView.widthAnchor.constraint(equalTo: topView.widthAnchor),

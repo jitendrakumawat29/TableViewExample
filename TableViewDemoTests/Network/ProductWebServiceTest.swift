@@ -13,6 +13,7 @@ class ProductWebServiceTest: XCTestCase {
     
     var sut:WebService!
     
+    // Set up your properties
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         
@@ -22,7 +23,7 @@ class ProductWebServiceTest: XCTestCase {
         sut = WebService(urlString: ProductConstant.productURLString, urlSession: urlSession)
         
     }
-    
+    // Release all the properties that you created
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         sut = nil
@@ -30,7 +31,7 @@ class ProductWebServiceTest: XCTestCase {
         MockURLProtocol.error = nil
     }
     
-    
+    // when API gives successful response
     func testProductWebService_WhenGivenSuccessfullResponse_ReturnsSuccess() {
         
         // Arrange
@@ -48,6 +49,7 @@ class ProductWebServiceTest: XCTestCase {
         
     }
 
+    // when you pass invalid string to url
     func testProductWebservice_WhenEmptyURLStringProvided_ReturnsError() {
         // Arrange
         let expectation = self.expectation(description: "An empty request URL string expectation")
@@ -66,6 +68,7 @@ class ProductWebServiceTest: XCTestCase {
         self.wait(for: [expectation], timeout: 2)
     }
     
+    // when api fails to give response and give you error
     func testProductWebService_WhenURLRequestFails_ReturnsErrorMessageDescription() {
         
         // Arrange

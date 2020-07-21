@@ -9,21 +9,24 @@
 import UIKit
 import SDWebImage
 
-
 class ProductCell : UITableViewCell {
     
     var product : Product? {
         didSet {
-            productImage.sd_setImage(with: URL(string: product?.imageURL ?? ""), placeholderImage: UIImage(named: "applelogo"))
-            productNameLabel.text = product?.title
-            productDescriptionLabel.text = product?.description
+            // update the imageview on main thread once it has been downloaded from server
+            DispatchQueue.main.async {
+                self.productImage.sd_setImage(with: URL(string: self.product?.imageURL ?? ""), placeholderImage: UIImage(named: "applelogo"))
+            }
+            self.productNameLabel.text = self.product?.title
+            self.productDescriptionLabel.text = self.product?.description
         }
     }
     
+    //MARK: declare and initialse properties
     private let productNameLabel : UILabel = {
         let lbl = UILabel()
         lbl.textColor = .black
-        lbl.font = UIFont.boldSystemFont(ofSize: 16)
+        lbl.font = UIFont.Medium(18)
         lbl.textAlignment = .left
         return lbl
     }()
@@ -32,7 +35,7 @@ class ProductCell : UITableViewCell {
     private let productDescriptionLabel : UILabel = {
         let lbl = UILabel()
         lbl.textColor = .black
-        lbl.font = UIFont.systemFont(ofSize: 16)
+        lbl.font = UIFont.regular(14)
         lbl.textAlignment = .left
         lbl.numberOfLines = 0
         return lbl
@@ -42,18 +45,20 @@ class ProductCell : UITableViewCell {
         let imgView = UIImageView(image: UIImage(named: "applelogo"))
         imgView.contentMode = .scaleAspectFit
         imgView.clipsToBounds = true
+        imgView.layer.cornerRadius = 5
         return imgView
     }()
     
    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        // add properties to table view cell
         contentView.addSubview(productNameLabel)
         contentView.addSubview(productDescriptionLabel)
         contentView.addSubview(productImage)
         
         // To set cell minimum height. It will be used when either title or description or both are null
-        contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 60).isActive = true
+        contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 72).isActive = true
         
         let marginGuide = contentView.layoutMarginsGuide
         
@@ -61,20 +66,20 @@ class ProductCell : UITableViewCell {
         productImage.contentMode = .scaleAspectFit
         productImage.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            productImage.widthAnchor.constraint(equalToConstant: 50),
-            productImage.heightAnchor.constraint(equalToConstant: 50),
+            productImage.widthAnchor.constraint(equalToConstant: 60),
+            productImage.heightAnchor.constraint(equalToConstant: 60),
             productImage.topAnchor.constraint(equalTo: marginGuide.topAnchor, constant: -5),
             productImage.leftAnchor.constraint(equalTo: marginGuide.leftAnchor),
         ])
 
-        // Product Name
+        // Product Name label Constraint
         productNameLabel.translatesAutoresizingMaskIntoConstraints = false
         productNameLabel.numberOfLines = 0
         productNameLabel.leadingAnchor.constraint(equalTo: productImage.trailingAnchor, constant: 10).isActive = true
         productNameLabel.topAnchor.constraint(equalTo: marginGuide.topAnchor).isActive = true
         productNameLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
         
-        // Product Description
+        // Product Description label Constraint
         productDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         productDescriptionLabel.numberOfLines = 0
         productDescriptionLabel.leadingAnchor.constraint(equalTo: productImage.trailingAnchor, constant: 10).isActive = true

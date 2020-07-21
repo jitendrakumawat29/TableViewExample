@@ -29,9 +29,5 @@ struct ProductResult: Decodable {
            case title
            case products = "rows"
         }
-       
-    
-    
-
 }
 
