@@ -102,39 +102,22 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return productVM.products.count
   }
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-       return UITableView.automaticDimension
-    }
-
 }
 
 // MARK: API response
 extension ViewController: APIResponseProtocol {
     func errorHandler(error: ProductAPIError) {
-        if #available(iOS 11.0, *) {
-            IndicatorView.shared.hideProgressView()
-        } else {
-            // Fallback on earlier versions
-        }
-        
-        DispatchQueue.main.async {
-            self.refreshControl.endRefreshing()
-        }
+        IndicatorView.shared.hideProgressView()
+        self.refreshControl.endRefreshing()
     }
     
     func didReceiveResponse() {
-        if #available(iOS 11.0, *) {
-            IndicatorView.shared.hideProgressView()
-        } else {
-            // Fallback on earlier versions
-        }
+        IndicatorView.shared.hideProgressView()
         // Once data has pulled from server then update table view and display to view
-        DispatchQueue.main.async {
-            self.navigationController?.navigationBar.topItem?.title = self.productVM.title
-            self.tableView.isHidden = false
-            self.tableView.reloadData()
-            self.refreshControl.endRefreshing()
-        }
+        self.navigationController?.navigationBar.topItem?.title = self.productVM.title
+        self.tableView.isHidden = false
+        self.tableView.reloadData()
+        self.refreshControl.endRefreshing()
     }
 }
 

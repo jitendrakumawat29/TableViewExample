@@ -2,7 +2,7 @@
 //  WebService.swift
 //  TableViewDemo
 //
-//  Created by Jitendra Kumar on 18/07/20.
+//  Created by Jitendra Kumar on 21/07/20.
 //  Copyright © 2020 Jitendra Kumar. All rights reserved.
 //
 
@@ -39,16 +39,11 @@ class WebService {
 
             // if result is found call the completion on main thread
             if let productResult = productResult {
-                DispatchQueue.main.async {
-                    completion(productResult, nil)
-                }
+                completion(productResult, nil)
             }
             else {
                 // api fails to give correct result so pass error message
-                DispatchQueue.main.async {
-                    completion(nil, ProductAPIError.invalidResponseModel)
-                }
-                
+                completion(nil, ProductAPIError.invalidResponseModel)
             }
         }.resume()
     }
